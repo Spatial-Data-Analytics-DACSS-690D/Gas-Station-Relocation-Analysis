@@ -1,0 +1,84 @@
+---
+title: "THEMATICS - tabs"
+output:
+  flexdashboard::flex_dashboard:
+    navbar:
+      - { icon: "fa-github", href: "https://github.com/Spatial-Data-Analytics-DACSS-690D/HW1-Interactive-Visualization", align: right }
+
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard) # always
+```
+
+## Sidebar {.sidebar}
+
+This dashboard explores the distribution of **mobile cellular subscriptions** across countries using three different mapping techniques. The data comes from the *World Indicators* dataset (WORLDINDICATORS.JSON). I focused on the region of [your chosen region, e.g., **Europe**], which includes more than 12 countries to provide meaningful comparisons.
+
+The purpose of this dashboard is to show how different cartographic methods can highlight patterns in the same dataset:
+
+1. **Dot Density Map (Static)**
+
+   * Each dot represents a fixed number of mobile subscriptions.
+   * Dots are randomly placed within country boundaries.
+   * This helps illustrate population distribution visually, giving a sense of where mobile use is concentrated.
+
+2. **Proportional Symbols Map (Interactive)**
+
+   * Each country is represented with a circle symbol.
+   * The size of the circle is proportional to the number of mobile subscriptions.
+   * This makes it easy to quickly compare countries: larger circles = more subscriptions.
+
+3. **Choropleth Map (Interactive)**
+
+   * Countries are shaded according to their mobile subscription totals.
+   * Darker colors indicate higher values, lighter colors indicate lower values.
+   * This method provides a clean overview of regional disparities and highlights geographic trends.
+
+By combining these three map types, the dashboard shows not just the raw numbers, but also **patterns, inequalities, and spatial relationships** in mobile technology adoption across countries.
+
+The GitHub repository linked here contains all code, data, and steps I used to build these maps, ensuring full transparency and reproducibility.
+
+
+
+## Column {.tabset .tabset-fade}
+
+
+### DDM 1
+
+```{r}
+readRDS("plot1_a.rds")
+```
+
+
+### DDM 2
+
+```{r}
+readRDS("plot1_b.rds")
+```
+
+### PSM 1
+
+```{r}
+readRDS("plot2_a.rds")
+```
+
+### PSM 2
+
+```{r}
+readRDS("plot2_b.rds")
+```
+
+
+### CHORO 1
+
+```{r}
+readRDS("plot3_a.rds")
+```
+
+### CHORO 2
+
+```{r}
+readRDS("plot3_b.rds")
+```
+
