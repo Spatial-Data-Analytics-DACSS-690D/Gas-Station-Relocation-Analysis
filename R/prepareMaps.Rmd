@@ -8,226 +8,164 @@ output:
 ```{r}
 rm(list = ls())
 
-europeLink="https://github.com/Spatial-Data-Analytics-DACSS-690D/HW1-Interactive-Visualization/raw/refs/heads/main/WORLD/europe_8857.gpkg"
+gasandschool="https://github.com/Spatial-Data-Analytics-DACSS-690D/Gas-Station-Relocation-Analysis/raw/refs/heads/main/python/dashboard.gpkg"
 library(sf)
-st_layers(europeLink)
+st_layers(gasandschool)
 ```
 ## Reading the layers:
 
 ```{r, message=FALSE}
-europe <- st_read(europeLink, layer = "continent")
-europemob_ddm <- st_read(europeLink, layer = "mobiles_ddm")
-europemob_psm <- st_read(europeLink, layer = "mobiles_psm")
-
+boston <- st_read(gasandschool, layer = "boston")
+stations <- st_read(gasandschool, layer = "stations")
+fuelBoston <- st_read(gasandschool, layer = "fuelBoston")
+schoolBoston <- st_read(gasandschool, layer = "schoolBoston")
+secured_schoolBoston <- st_read(gasandschool, layer = "secured_schoolBoston")
+fuelBoston_allPoly <- st_read(gasandschool, layer = "fuelBoston_allPoly")
+gas_relocate <- st_read(gasandschool, layer = "gas_relocate")
+suitable_roads <- st_read(gasandschool, layer = "suitable_roads")
+streets <- st_read(gasandschool, layer = "streets")
+secured_fuelBoston_allPoly <- st_read(gasandschool, layer = "secured_fuelBoston_allPoly")
+good_routes_forGas <- st_read(gasandschool, layer = "good_routes_forGas")
+GoodLocationsGas_buffered_gdf <- st_read(gasandschool, layer = "GoodLocationsGas_buffered_gdf")
+GoodLocationsGas_gdf <- st_read(gasandschool, layer = "GoodLocationsGas_gdf")
+GoodLocationsGas_4326 <- st_read(gasandschool, layer = "GoodLocationsGas_4326")
 ```
 
-## Checking CRS
-
-```{r}
-st_crs(europe)$epsg
-```
-
-# THE BASE
 ```{r}
 library(ggplot2)
 library(scales)
-
-ggplot() + theme_light() +
-  #call map
-  geom_sf(data = europe) + 
-  # adjust datum 
-  coord_sf(datum = st_crs(europe)) + 
-  # custom X and Y axes
-  scale_x_continuous(labels = label_number(scale = 1/1000, suffix = " km")) +
-  scale_y_continuous(labels = label_number(scale = 1/1000, suffix = " km")) +
-  labs(x = "Easting", y = "Northing") #labels
-```
-# DDM - static
-
-```{r}
-plot1_a=ggplot() + theme_light() +
-  #base
-  geom_sf(data = europe,fill="white",color="grey80") +
-  # layer
-  geom_sf(data=europemob_ddm,
-          alpha=0.1,#transparency
-          shape=20,
-          size=0.5,
-          color="red")+
-  coord_sf(datum = st_crs(europe)) + 
-  # custom X and Y axes
-  scale_x_continuous(labels = label_number(scale = 1/1000, suffix = " km")) +
-  scale_y_continuous(labels = label_number(scale = 1/1000, suffix = " km")) +
-  labs(x = "Easting", y = "Northing") #labels
-
-plot1_a
-```
-# DDM - interactive
-
-```{r}
-library(leaflet)
-# needs geographic CRS
-ddm_4326 <- st_transform(europemob_ddm, crs = 4326)
-
-leaflet() %>%
-  addTiles() %>%  # base map
-  addCircleMarkers(data = ddm_4326,
-                   color="red",
-                   stroke=0,
-                   radius = 0.01,
-                   opacity = 0.1)
-```
-
-Almost the same:
-
-```{r}
-plot1_b=leaflet() %>%
-  addProviderTiles(providers$CartoDB.Positron)  %>%  # names in english
-  addCircleMarkers(data = ddm_4326,
-                   color="red",
-                   stroke=0,
-                   radius = 0.01,
-                   opacity = 0.1)
-plot1_b
+library(dplyr)
 ```
 
 
-# PSM - static
-
 ```{r}
-plot2_a=ggplot() + theme_light() +
-  #base
-  geom_sf(data = europe,fill="white",color="grey80") +
-  # layer
-  geom_sf(data=europemob_psm,
-          shape=20,
-          aes(size=mobiles/1000,color=factor(mobiles_outlier)))+
-  scale_size_area(
-    name = "Mobile Users (x1,000)", # Name for the legend
-    max_size = 20) +       # This defines the maximum *radius*
-  guides(color="none") + 
-  
-  coord_sf(datum = st_crs(europe)) + 
-  # custom X and Y axes
-  scale_x_continuous(labels = label_number(scale = 1/1000, suffix = " km")) +
-  scale_y_continuous(labels = label_number(scale = 1/1000, suffix = " km")) +
-  labs(x = "Easting", y = "Northing") #labels
+library(ggplot2)
+library(sf)
 
-plot2_a  
-```
-# PSM - interactive
-
-```{r}
-# CRS for leaflet
-psm_4326 <- st_transform(europemob_psm, crs = 4326)
-
-
-plot2_b=leaflet() %>%
-  addProviderTiles(providers$CartoDB.Positron)  %>%  
-  addCircleMarkers(data = psm_4326,
-                   # fillColor = "red",
-                   # stroke = T, #border
-                   # color="red", #border color
-                   # fillOpacity = 1,
-                   label = ~Country,
-                   radius = ~size)
-plot2_b
-```
-
-
-# CHORO - static
-
-```{r}
-plot3_a=ggplot() + theme_light() +
-  #base
-  geom_sf(data=europe,
-          aes(fill=mobiles_density_FJ5_cat))+
-  coord_sf(datum = st_crs(europe)) +
-  scale_fill_brewer(direction = 1,palette = 'RdBu') + 
-  scale_x_continuous(labels = label_number(scale = 1/1000, suffix = " km")) +
-  scale_y_continuous(labels = label_number(scale = 1/1000, suffix = " km")) +
-  labs(x = "Easting", y = "Northing",fill="Mobile Users Density")
-  
-plot3_a
-  
-```
-
-# CHORO - interactive
-
-```{r}
-choro_4326 <- st_transform(europe, crs = 4326)
-#needed
-choro_4326$mobiles_density_FJ5_cat=ordered(choro_4326$mobiles_density_FJ5_cat)
-# First, create a color palette for your categorical variable
-pal <- colorFactor(palette = "RdBu",
-                   domain = choro_4326$mobiles_density_FJ5_cat,
-                   ordered = T,
-                   reverse = F)
-
-leaflet() %>%
-  addProviderTiles(providers$CartoDB.Positron)  %>% 
-  addPolygons(
-    data = choro_4326,
-    fillColor = ~pal(mobiles_density_FJ5_cat),
-    fillOpacity = 0.7,
-    color = "white",
-    weight = 1,
-    opacity = 1
-    ) %>%
-  addLegend(
-    pal = pal,
-    values = choro_4326$mobiles_density_FJ5_cat,
+plot_1 <- ggplot() +
+  geom_sf(data = boston, aes(color = "Boston Boundary"), fill = "lightblue", size = 0.5) +
+  geom_sf(data = schoolBoston, aes(color = "School"), size = 2) +
+  geom_sf(data = fuelBoston, aes(color = "Gas Station"), size = 2) +
+  scale_color_manual(
+    name = "Legend",
+    values = c(
+      "Boston Boundary" = "lightblue",
+      "School" = "black",
+      "Gas Station" = "red"
     )
-```
-
-```{r}
-# Calculate the center of europe for the home button
-europe_center <- st_bbox(choro_4326) %>% 
-  as.vector() %>% 
-  {c(mean(c(.[1], .[3])), mean(c(.[2], .[4])))}  # Calculate center coordinates
-
-
-plot3_b=leaflet() %>%
-  addProviderTiles(providers$CartoDB.Positron)  %>% 
-addPolygons(
-    data = choro_4326,
-    fillColor = ~pal(mobiles_density_FJ5_cat),
-    fillOpacity = 0.7,
-    color = "white",
-    weight = 1,
-    opacity = 1,
-    label = lapply(
-      paste("<strong>", choro_4326$Country, "</strong><br>",
-            "Density: ", choro_4326$mobiles_density),
-      htmltools::HTML
-    )
-  ) %>%
-  addLegend(
-    pal = pal,
-    values = choro_4326$mobiles_density_FJ5_cat,
-    opacity = 0.7,
-    title = "Mobile Users Density",
-    position = "bottomright"
-  )%>%
-  addEasyButton(
-    easyButton(
-      icon = "fa-home", 
-      title = "Reset to europe View",
-      onClick = JS(sprintf("function(btn, map){ map.setView([%f, %f], 3); }", 
-                          europe_center[2], europe_center[1]))
-    )
+  ) +
+  labs(
+    title = "Gas Stations and Schools in Boston",
+    subtitle = "Visualization of gas stations and schools within Boston city limits",
+    x = "Longitude", y = "Latitude"
+  ) +
+  theme_bw() +
+  theme(
+    legend.position = "bottom",
+    legend.direction = "horizontal",
+    legend.title = element_text(face = "bold")
   )
-plot3_b
+
+saveRDS(plot_1, file = "plot1.rds")
+plot_1
+
 ```
 
 
 
+
 ```{r}
-saveRDS(plot1_a,file = "plot1_a.rds")
-saveRDS(plot1_b,file = "plot1_b.rds")
-saveRDS(plot2_a,file = "plot2_a.rds")
-saveRDS(plot2_b,file = "plot2_b.rds")
-saveRDS(plot3_a,file = "plot3_a.rds")
-saveRDS(plot3_b,file = "plot3_b.rds")
+plot_2 <- ggplot() +
+  geom_sf(data = secured_schoolBoston, aes(fill = "School Safety Zone"), color = NA, alpha = 0.6) +
+  geom_sf(data = gas_relocate, aes(color = "Gas Station (to Relocate)"), size = 1.5) +
+  scale_fill_manual(name = "Legend", values = c("School Safety Zone" = "yellow")) +
+  scale_color_manual(name = "Legend", values = c("Gas Station (to Relocate)" = "red")) +
+  labs(
+    title = "Gas Stations Near Schools (Within 200 m)",
+    subtitle = "Stations intersecting school safety zones, requiring relocation",
+    x = "Longitude", y = "Latitude"
+  ) +
+  theme_bw() +
+  theme(
+    legend.position = "bottom",
+    legend.direction = "horizontal",
+    legend.title = element_text(face = "bold")
+  )
+
+saveRDS(plot_2, file = "plot2.rds")
+plot_2
+
+```
+
+
+```{r}
+plot_3 <- ggplot() +
+  geom_sf(data = good_routes_forGas, aes(color = "Potential Route"), size = 0.8) +
+  scale_color_manual(
+    name = "Legend",
+    values = c("Potential Route" = "darkgreen")
+  ) +
+  labs(
+    title = "Potential Road Network for Gas Station Relocation",
+    subtitle = "Identified routes suitable for relocation based on accessibility and safety",
+    x = "Longitude", y = "Latitude"
+  ) +
+  theme_bw() +
+  theme(
+    legend.position = "bottom",
+    legend.direction = "horizontal",
+    legend.title = element_text(face = "bold")
+  )
+
+saveRDS(plot_3, file = "plot3.rds")
+plot_3
+
+```
+
+
+```{r}
+intersection_data <- tryCatch({
+  st_intersection(fuelBoston, gas_relocate)
+}, error = function(e) {
+  message("⚠️ Intersection failed, skipping magenta layer.")
+  NULL
+})
+
+plot_4 <- ggplot() +
+  geom_sf(data = suitable_roads, aes(fill = "Suitable Roads"), color = "goldenrod", size = 0.5) +
+  geom_sf(data = GoodLocationsGas_buffered_gdf, aes(color = "Relocation Buffers"), fill = NA, size = 1) +
+  geom_sf(data = GoodLocationsGas_gdf, aes(shape = "Candidate Centers"), color = "red", size = 3) +
+  geom_sf(data = fuelBoston, aes(color = "Existing Gas Stations"), size = 1.2) +
+  geom_sf(data = schoolBoston, aes(color = "Schools"), size = 1.2) +
+  { if (!is.null(intersection_data)) geom_sf(data = intersection_data, aes(color = "Stations to Relocate"), size = 2) } +
+  scale_fill_manual(name = "Legend", values = c("Suitable Roads" = "yellow")) +
+  scale_color_manual(
+    name = "Legend",
+    values = c(
+      "Relocation Buffers" = "red",
+      "Existing Gas Stations" = "black",
+      "Schools" = "green",
+      "Stations to Relocate" = "magenta"
+    )
+  ) +
+  scale_shape_manual(
+    name = "Legend",
+    values = c("Candidate Centers" = 3)
+  ) +
+  labs(
+    title = "Suitable Roads and Proposed Gas Station Relocation Sites",
+    subtitle = "Visualizing candidate relocation buffers and existing gas/school locations",
+    x = "Longitude", y = "Latitude"
+  ) +
+  theme_bw() +
+  theme(
+    legend.position = "bottom",
+    legend.direction = "horizontal",
+    legend.title = element_text(face = "bold")
+  )
+
+saveRDS(plot_4, file = "plot4.rds")
+plot_4
+
 ```
 

@@ -1,9 +1,10 @@
 ---
-title: "THEMATICS - tabs"
+title: "Gas Station Relocation Analysis"
+author: "Sangam Patil"
 output:
   flexdashboard::flex_dashboard:
     navbar:
-      - { icon: "fa-github", href: "https://github.com/Spatial-Data-Analytics-DACSS-690D/HW1-Interactive-Visualization", align: right }
+      - { icon: "fa-github", href: "https://github.com/Spatial-Data-Analytics-DACSS-690D/Gas-Station-Relocation-Analysis", align: right }
 
 ---
 
@@ -12,30 +13,21 @@ library(flexdashboard) # always
 ```
 
 ## Sidebar {.sidebar}
+#### **Introduction**
 
-This dashboard explores the distribution of **mobile cellular subscriptions** across countries using three different mapping techniques. The data comes from the *World Indicators* dataset (WORLDINDICATORS.JSON). I focused on the region of [your chosen region, e.g., **Europe**], which includes more than 12 countries to provide meaningful comparisons.
+This dashboard presents a **Gas Station Relocation Analysis** aimed at identifying and suggesting relocation for fuel stations located within a **200-meter range of schools in Boston**. Using spatial data processing and visualization through **R (ggplot2 + sf)**, the analysis integrates multiple geospatial layers—schools, existing fuel stations, and city boundaries—to detect proximity violations and explore safer, more suitable locations for gas stations.
 
-The purpose of this dashboard is to show how different cartographic methods can highlight patterns in the same dataset:
+#### **Plot 1 – Distribution of Fuel Stations in Boston**
+This map displays all **existing fuel stations across Boston**, where each point represents a station’s precise location. The color coding helps visualize the **spatial density and spread** of fuel stations across the city, serving as the foundation for later proximity analysis.
 
-1. **Dot Density Map (Static)**
+#### **Plot 2 – Distribution of Schools in Boston**
+This map visualizes **school locations across Boston**, helping identify regions with higher educational density. Overlaying these with fuel station data allows for detecting areas where schools and fuel stations are located in close proximity.
 
-   * Each dot represents a fixed number of mobile subscriptions.
-   * Dots are randomly placed within country boundaries.
-   * This helps illustrate population distribution visually, giving a sense of where mobile use is concentrated.
+#### **Plot 3 – Fuel Stations Within 200m of Schools**
+This visualization highlights **fuel stations that fall within a 200-meter buffer zone** around schools. The color distinction marks which stations are within the restricted range, identifying those that **require relocation consideration** due to safety or zoning concerns.
 
-2. **Proportional Symbols Map (Interactive)**
-
-   * Each country is represented with a circle symbol.
-   * The size of the circle is proportional to the number of mobile subscriptions.
-   * This makes it easy to quickly compare countries: larger circles = more subscriptions.
-
-3. **Choropleth Map (Interactive)**
-
-   * Countries are shaded according to their mobile subscription totals.
-   * Darker colors indicate higher values, lighter colors indicate lower values.
-   * This method provides a clean overview of regional disparities and highlights geographic trends.
-
-By combining these three map types, the dashboard shows not just the raw numbers, but also **patterns, inequalities, and spatial relationships** in mobile technology adoption across countries.
+#### **Plot 4 – Regional Distribution of Fuel Stations**
+This bar chart summarizes the **number of fuel stations per region or district** in Boston. It provides a broader view of **fuel infrastructure density**, helping prioritize areas where **relocation or redistribution** efforts may be most necessary.
 
 The GitHub repository linked here contains all code, data, and steps I used to build these maps, ensuring full transparency and reproducibility.
 
@@ -44,41 +36,27 @@ The GitHub repository linked here contains all code, data, and steps I used to b
 ## Column {.tabset .tabset-fade}
 
 
-### DDM 1
+### PLOT 1
 
 ```{r}
-readRDS("plot1_a.rds")
+readRDS("plot1.rds")
 ```
 
-
-### DDM 2
+### PLOT 2
 
 ```{r}
-readRDS("plot1_b.rds")
+readRDS("plot2.rds")
 ```
 
-### PSM 1
+### PLOT 3
 
 ```{r}
-readRDS("plot2_a.rds")
+readRDS("plot3.rds")
 ```
 
-### PSM 2
+### PLOT 4
 
 ```{r}
-readRDS("plot2_b.rds")
-```
-
-
-### CHORO 1
-
-```{r}
-readRDS("plot3_a.rds")
-```
-
-### CHORO 2
-
-```{r}
-readRDS("plot3_b.rds")
+readRDS("plot4.rds")
 ```
 
