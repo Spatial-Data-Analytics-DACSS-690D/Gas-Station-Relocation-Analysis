@@ -58,5 +58,4 @@ flexdashboard – interactive dashboard creation
 GIS Data Format: GeoPackage (.gpkg)
 
 ### Links
-[Dashboard] (https://spatial-data-analytics-dacss-690d.github.io/Gas-Station-Relocation-Analysis/)
-[Repo] (https://github.com/Spatial-Data-Analytics-DACSS-690D/Gas-Station-Relocation-Analysis/)
+[**Dashboard**](https://spatial-data-analytics-dacss-690d.github.io/Gas-Station-Relocation-Analysis/) and [**Repo**](https://github.com/Spatial-Data-Analytics-DACSS-690D/Gas-Station-Relocation-Analysis/)
